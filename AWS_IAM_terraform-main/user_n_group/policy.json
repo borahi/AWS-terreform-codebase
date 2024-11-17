@@ -1,0 +1,29 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Sid": "Stmt1642184842082",
+        "Action": "rum:*",
+        "Effect": "Allow",
+        "Resource": "*"
+      },
+      {
+        "Effect": "Allow",
+        "Action": [
+            "ec2:StartInstances",
+            "ec2:DescribeInstances"
+        ],
+        "Resource": "*"
+      },
+      {
+        "Effect": "Allow",
+        "Action": [
+            "iam:Get*",
+            "iam:List*",
+            "iam:Generate*"
+        ],
+        "Resource": "*"
+      }
+    
+    ]
+  }
