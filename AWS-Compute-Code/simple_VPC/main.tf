@@ -20,26 +20,15 @@ resource "aws_internet_gateway" "dev_igw" {
   }
 }
 
-#############################  Route-table ###########################
+############################# Pub Route-table ###########################
 
 resource "aws_route_table" "pub_route" {
   vpc_id = aws_vpc.dev_vpc.id
-  route = [{
-    carrier_gateway_id         = ""
-    cidr_block                 = "0.0.0.0/0"
-    destination_prefix_list_id = ""
-    egress_only_gateway_id     = ""
-    gateway_id                 = aws_internet_gateway.dev_igw.id
-    instance_id                = ""
-    ipv6_cidr_block            = ""
-    local_gateway_id           = ""
-    nat_gateway_id             = ""
-    network_interface_id       = ""
-    transit_gateway_id         = ""
-    vpc_endpoint_id            = ""
-    vpc_peering_connection_id  = ""
-  }]
 
+  route {
+      cidr_block = "0.0.0.0/0"
+      gateway_id = aws_internet_gateway.dev_igw.id
+    }
 
   tags = {
     Name = "BU1-dev-pub-rt01"
@@ -47,13 +36,14 @@ resource "aws_route_table" "pub_route" {
 
 }
 
-resource "aws_default_route_table" "pvt_route" {
-  default_route_table_id = aws_vpc.dev_vpc.default_route_table_id
+############################# Pvt Route-table #############################
+
+resource "aws_route_table" "pvt_route" {
+  vpc_id = aws_vpc.dev_vpc.id
 
   tags = {
-    Name = "BU1-dev-def-pvt-rt01"
+    Name = "BU1-dev-pvt-rt01"
   }
-
 }
 
 
@@ -98,7 +88,7 @@ resource "aws_route_table_association" "public-sub-accociate" {
 
 resource "aws_route_table_association" "pvt-sub-associate" {
   count          = 2
-  route_table_id = aws_default_route_table.pvt_route.id
+  route_table_id = aws_route_table.pvt_route.id
   subnet_id      = aws_subnet.pvt-sub001.*.id[count.index]
 
 }
@@ -156,6 +146,4 @@ resource "aws_security_group" "Security001" {
       "self" : false,
       "to_port" : 0
   }]
-
-
 }
